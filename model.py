@@ -228,6 +228,59 @@ class BatchNormModel(nn.Module):
 
 
 
+
+class CNN_BN_Drop(nn.Module):
+    '''
+    This Model architecture is used to solve the assignment.
+    Contains the following layers:
+        2 convolutional layers
+        1 MaxPooling layers
+        2 Linear/Fully connected layers
+        2 Batch Normalization layers
+        1 Dropout Layer
+        1 Global Average Pooling Layer
+    Inputs:
+        Image : 1x28x28 (MNIST Image)
+    
+    Outputs:
+        label: Label of the MNIST Image
+    
+    '''
+    def __init__(self):
+        super(Model, self).__init__()
+        
+        self.conv1 = nn.Sequential(
+            nn.Conv2d(1, 64, 3, padding=1),# Input MNIST (1x28x28) image, output: 28x28x16
+            nn.ReLU(),
+            nn.BatchNorm2d(64),
+            nn.MaxPool2d(2, 2), #14x14x32
+            
+            nn.Conv2d(64, 32, 3, padding=1), # shape: 14x14x64
+            nn.ReLU(),
+            nn.BatchNorm2d(32)
+            
+        ) #output : 14x14x64
+    
+        self.fc = nn.Sequential(
+            nn.Dropout(0.1),   # adding dropout layer with p=0.1
+            nn.Linear(32, 12),
+            nn.Linear(12, 10)   # final FC layer, to get the classification output.
+        )
+                
+        
+    def forward(self, x):
+        x = self.conv1(x) # Initial pass of the data throught first Conv1 block
+        x = nn.AvgPool2d(14)(x) # We shall be using Global Average Pooling instead of the flatten layer.
+        x = torch.squeeze(x)
+        x = torch.squeeze(x)
+        x = self.fc(x)
+        
+        x = F.log_softmax(x, dim=1) #final classification output.
+        return x
+
+
+
+
 def get_model(normalization_type):
     '''Function that takes the type of normalization technique that has to be applied 
     and returns the model.'''
