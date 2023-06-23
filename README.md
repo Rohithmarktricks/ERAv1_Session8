@@ -39,7 +39,7 @@
 3. This module also contains ```get_model()``` function that takes the ```normalization``` argument and creates the CNN model with corresponding Normalization technique.
 
 
-#### [train_helper.py](/train_helper.py)
+#### [trainer.py](/trainer.py)
 1. This is the helper module that contains the following:
     1. ```Trainer:``` This class contains the train and test methods that can be used for 
     ```LayerNormalization```, ```GroupNormalization``` and ```BatchNormalization```.
